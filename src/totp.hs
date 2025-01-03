@@ -15,4 +15,3 @@ parseCSV = map (reverse . separateValues) . lines
     trim = trim' . trim' -- I copypasted it from Stack Overflow XDDDDD
     trim' = reverse . dropWhile isSpace
 
-main = readFile "ejemplo.csv" >>= mapM_ print . parseCSV
