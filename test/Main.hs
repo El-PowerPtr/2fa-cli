@@ -1,4 +1,6 @@
 module Main (main) where
 
+import CSV
+
 main :: IO ()
-main = putStrLn "Test suite not yet implemented."
+main =  readFile "ejemplo.csv" >>= mapM_ print . parseCSV
