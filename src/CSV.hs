@@ -9,7 +9,7 @@ parseCSV = map (reverse . separateValues) . lines
     separateValues' xs [] = xs
     separateValues' xs ws = case span (/= ',') ws of
       ([], w) -> separateValues' ("" : xs) (tail w)
-      (x, ",") -> trim x : xs
+      (x, ",") -> "" : trim x : xs
       (x, []) -> trim x : xs
       (x, w) -> separateValues' (trim x : xs) (tail w)
     trim = trim' . trim' -- I copypasted it from Stack Overflow XDDDDD
