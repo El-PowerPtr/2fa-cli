@@ -1,6 +1,7 @@
 module Main (main) where
 
-import CSV
+import Crypt.SHA1
+import Text.Printf
 
 main :: IO ()
-main =  readFile "ejemplo.csv" >>= mapM_ print . parseCSV
+main = mapM_ (printf "%x") $ padding [ 0b01100001, 0b01100010, 0b01100011, 0b01100100, 0b01100101 ] 
