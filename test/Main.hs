@@ -1,7 +1,35 @@
 module Main (main) where
 
-import Crypt.SHA1
-import Text.Printf (printf)
+-- import qualified Data.ByteString as BS
+-- import Crypt.SHA1
+-- import Data.Char
+import Test.Hspec
+-- import Data.Word
+import CSV 
+
 
 main :: IO ()
-main = mapM_ (printf "%x") $ padding [ 0b01100001, 0b01100010, 0b01100011, 0b01100100, 0b01100101 ] 5
+main = hspec $ do 
+                describe "CSV" $ do
+                    it "normal use case" $ do 
+                        separateValues "hola , mundo, mundial" `shouldBe` ["hola", "mundo", "mundial"]
+                    it "processing a row with all blank spaces" $ do 
+                        separateValues ", , , , , " `shouldBe` ["","","","","",""]
+                    it "processing a row with a blank space in the middle" $ do 
+                        separateValues "hola , , mundial"  `shouldBe` ["hola","","mundial"]
+                    it "processing a row with a blank space in the left" $ do 
+                        separateValues ", hola , mundial"  `shouldBe` ["","hola","mundial"]
+                    it "processing a row with a blank space in the right" $ do 
+                        separateValues "hola , mundo, "  `shouldBe` ["hola","mundo",""]
+                         
+    -- hspec $ do
+    --         describe "SHA-1" $ do
+    --             it "returns an empty list" $ do
+    --                 cut 4 [1..12] `shouldBe` [[1,2,3,4], [5,6,7,8], [9,10,11,12]]
+    --             if "checks if toString and fromString works" % do
+    --                 (toString $ fromString "hola") `shouldBe` "hola"
+    --             -- it "returns the sha-1 encoded message" $ do
+    --             --     sha1Encoding (fromString "hello wolrd") `shouldBe` fromString "2aae6c35c94fcfb415dbe95f408b9ce91ee846ed"
+    --     where 
+    --         fromString = BS.pack . map ((toEnum :: Int -> Word8) . fromEnum)
+    --         toString = map ((toEnum :: Int -> Char) . fromEnum) . BS.unpack

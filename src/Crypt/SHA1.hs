@@ -1,4 +1,3 @@
-{-# OPTIONS_GHC -Wno-incomplete-patterns #-}
 module Crypt.SHA1 where
 
 import Data.Bits
@@ -61,15 +60,19 @@ chunks msg = cut 64 $ chunks' msg $ BS.length msg
 
 cut :: Int -> [a] -> [[a]]
 cut _    []  = []
-cut size lst = let (l, r) = splitAt 64 lst
+cut size lst = let (l, r) = splitAt size lst
                 in l : cut size r
 
 sha1 :: [Word32] -> [Word32]
-sha1 msg = let w = wrds msg (drop 3 msg) (drop 8 msg) (drop 14 msg) (drop 16 msg) 16
+sha1 msg = let w = wrds msg (drop 2 msg) (drop 7 msg) (drop 13 msg) (drop 15 msg) 16
             in  processMsg initialWords w 0
     where
         wrds :: [Word32] -> [Word32] -> [Word32] -> [Word32] -> [Word32] -> Int -> [Word32]
         wrds result _ _ _ _ 80 = result
+        wrds _     [] _ _ _ t = error $ "empty list: a " ++ show msg
+        wrds _     _ [] _ _ t = error $ "empty list: b " ++ show msg
+        wrds _     _ _ [] _ t = error $ "empty list: c " ++ show msg
+        wrds _     _ _ _ [] t = error $ "empty list: d " ++ show msg
         wrds result (a:as) (b:bs) (c:cs) (d:ds) t = let w = [(a .^. b .^. c .^. d) `rotateL` 1] 
                                                         in wrds (result ++ w) (as ++ w) (bs ++ w) (cs ++ w) (ds ++ w) (t + 1)
         processMsg :: [Word32] -> [Word32] -> Int -> [Word32] 
@@ -82,5 +85,5 @@ sha1 msg = let w = wrds msg (drop 3 msg) (drop 8 msg) (drop 14 msg) (drop 16 msg
 msgDiggest :: [[Word8]] -> [Word32]
 msgDiggest msg = join $ map (sha1 . map fromWord8List . cut 4) msg
 
-sha1Enconding :: BS.ByteString -> BS.ByteString
-sha1Enconding = BS.pack . join . map toWord8List . msgDiggest . chunks 
+sha1Encoding :: BS.ByteString -> BS.ByteString
+sha1Encoding = BS.pack . join . map toWord8List . msgDiggest . chunks 

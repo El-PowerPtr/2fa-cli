@@ -109,4 +109,5 @@ test-suite totp-beta-test
     build-depends:
         base ^>=4.17.2.1,
         bytestring ^>= 0.11.5.3,
+        hspec,
         totp-beta
