@@ -102,7 +102,7 @@ test-suite totp-beta-test
     hs-source-dirs:   test
 
     -- The entrypoint to the test suite.
-    main-is:          Main.hs
+    main-is:          Tests.hs
 
     -- Test dependencies.
     build-depends:

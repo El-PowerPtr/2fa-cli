@@ -24,6 +24,10 @@ main = hspec $ do
                 describe "SHA-1: hexPair" $ do
                     it "splitting 0b01001100" $ do
                         hexPair (toEnum 0b01001100) `shouldBe` map toEnum [0b00000100, 0b00001100]
+                    it "splitting 0b00000000" $ do
+                        hexPair (toEnum 0b00000000) `shouldBe` map toEnum [0b00000000, 0b00000000]
+                    it "splitting 0b11111111" $ do
+                        hexPair (toEnum 0b11111111) `shouldBe` map toEnum [0b00001111, 0b00001111]
                          
 -- hspec $ do
 --         describe "SHA-1" $ do
