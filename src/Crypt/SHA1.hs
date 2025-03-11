@@ -6,7 +6,7 @@ import Data.Word
 import qualified Data.ByteString as BS
 
 hexPair :: Word8 -> [Word8]
-hexPair x = [(x .>>. 4) .&. 0b00001111, x .&. 0b00001111]
+hexPair x = [x .>>. 4, x .&. 0b00001111]
 
 padding :: [Word8] -> Int -> [Word8]
 padding msg len = padding' (length msg)
