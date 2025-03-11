@@ -6,7 +6,7 @@ import Data.Word
 import qualified Data.ByteString as BS
 
 hexPair :: Word8 -> [Word8]
-hexPair x = [(x .>>. 4) .&. 0b11110000, x .&. 0b00001111]
+hexPair x = [(x .>>. 4) .&. 0b00001111, x .&. 0b00001111]
 
 padding :: [Word8] -> Int -> [Word8]
 padding msg len = padding' (length msg)
@@ -69,10 +69,10 @@ sha1 msg = let w = wrds msg (drop 2 msg) (drop 7 msg) (drop 13 msg) (drop 15 msg
     where
         wrds :: [Word32] -> [Word32] -> [Word32] -> [Word32] -> [Word32] -> Int -> [Word32]
         wrds result _ _ _ _ 80 = result
-        wrds _     [] _ _ _ t = error $ "empty list: a " ++ show msg
-        wrds _     _ [] _ _ t = error $ "empty list: b " ++ show msg
-        wrds _     _ _ [] _ t = error $ "empty list: c " ++ show msg
-        wrds _     _ _ _ [] t = error $ "empty list: d " ++ show msg
+        wrds _     [] _ _ _ _ = error $ "empty list: a " ++ show msg
+        wrds _     _ [] _ _ _ = error $ "empty list: b " ++ show msg
+        wrds _     _ _ [] _ _ = error $ "empty list: c " ++ show msg
+        wrds _     _ _ _ [] _ = error $ "empty list: d " ++ show msg
         wrds result (a:as) (b:bs) (c:cs) (d:ds) t = let w = [(a .^. b .^. c .^. d) `rotateL` 1] 
                                                         in wrds (result ++ w) (as ++ w) (bs ++ w) (cs ++ w) (ds ++ w) (t + 1)
         processMsg :: [Word32] -> [Word32] -> Int -> [Word32] 
