@@ -17,15 +17,17 @@ padding msg len = padding' (length msg)
             padding' 64 = msg
             padding' size
                 | size > 55 = msg ++ [0b10000000] ++ replicate (63 - size) (toEnum 0)
-                                ++ replicate 56 (toEnum 0) ++ toWord8List (toEnum highBound) ++ toWord8List (toEnum lowBound)
+                                ++ replicate 56 (toEnum 0) 
+                                ++ toWord8List (toEnum highBound) ++ toWord8List (toEnum lowBound)
                 | otherwise = msg ++ [0b10000000] ++ replicate (55 - size) (toEnum 0)
                                 ++ toWord8List (toEnum highBound) ++ toWord8List (toEnum lowBound)
 
 toWord8List :: Word32 -> [Word8]
-toWord8List number =  map (\x -> toEnum $ ((0b11111111 .>>. x) .&. fromEnum number) .>>. x) [24,16..0]
+toWord8List number =  map (\x -> toEnum $ ((0b11111111 .<<. x) .&. fromEnum number) .>>. x) [24,16..0]
 
 fromWord8List :: [Word8] -> Word32
-fromWord8List numbers = toEnum $ sum $ zipWith (\number place -> fromEnum number .<<. place) numbers [24,16..0]
+fromWord8List numbers = toEnum $ sum $ zipWith 
+                            (\number place -> fromEnum number .<<. place) numbers [24,16..0]
 
 (|+|) :: Word32 -> Word32 -> Word32
 (|+|) a b = toEnum $ (fromEnum a + fromEnum b) `mod` 0x100000000
@@ -74,11 +76,13 @@ sha1 msg = let w = wrds msg (drop 2 msg) (drop 7 msg) (drop 13 msg) (drop 15 msg
         wrds _     _ _ [] _ _ = error $ "empty list: c " ++ show msg
         wrds _     _ _ _ [] _ = error $ "empty list: d " ++ show msg
         wrds result (a:as) (b:bs) (c:cs) (d:ds) t = let w = [(a .^. b .^. c .^. d) `rotateL` 1] 
-                                                        in wrds (result ++ w) (as ++ w) (bs ++ w) (cs ++ w) (ds ++ w) (t + 1)
+                                                        in wrds (result ++ w) (as ++ w) 
+                                                            (bs ++ w) (cs ++ w) (ds ++ w) (t + 1)
         processMsg :: [Word32] -> [Word32] -> Int -> [Word32] 
         processMsg result _ 80 = zipWith (|+|) result initialWords
         processMsg [a,b,c,d,e] (w:ws) time = let t = time `mod` 20
-                                                 temp =  (a `rotateL` 5) |+| sha1Round t b c d |+| e |+| w |+| constant t
+                                                 temp =  (a `rotateL` 5) |+|
+                                                    sha1Round t b c d |+| e |+| w |+| constant t
                                                  rb = b `rotateL` 30
                                             in processMsg [temp,a,rb,c,d] ws (time + 1)
 

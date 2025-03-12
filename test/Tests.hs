@@ -4,7 +4,7 @@ module Main (main) where
 import Crypt.SHA1
 -- import Data.Char
 import Test.Hspec
--- import Data.Word
+import Data.Word
 import CSV 
 
 
@@ -28,6 +28,11 @@ main = hspec $ do
                         hexPair (toEnum 0b00000000) `shouldBe` map toEnum [0b00000000, 0b00000000]
                     it "splitting 0b11111111" $ do
                         hexPair (toEnum 0b11111111) `shouldBe` map toEnum [0b00001111, 0b00001111]
+                describe "SHA-1: toWord8List" $ do
+                    it "splitting the max Word32 number" $ do 
+                        toWord8List (maxBound::Word32) `shouldBe` replicate 4 (maxBound::Word8)
+                    it "splitting the min Word32 number" $ do 
+                        toWord8List (minBound::Word32) `shouldBe` replicate 4 (minBound::Word8)
                          
 -- hspec $ do
 --         describe "SHA-1" $ do
