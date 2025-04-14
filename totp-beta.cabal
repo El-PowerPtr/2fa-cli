@@ -61,6 +61,7 @@ library
     -- Modules exported by the library.
     exposed-modules:
         Crypt.HMAC,
+        Crypt.HOTP,
         Crypt.SHA1,
         CSV
 
