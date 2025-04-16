@@ -63,6 +63,7 @@ library
         Crypt.HMAC,
         Crypt.HOTP,
         Crypt.SHA1,
+        Crypt.TOTP,
         CSV
 
     -- Modules included in this library but not exported.
